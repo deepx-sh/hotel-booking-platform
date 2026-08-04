@@ -1,6 +1,9 @@
 const Listing = require("../models/listing.js");
 const getCoordinates = require("../utils/geocode.js");
 
+function escapeRegex(text) {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 module.exports.index = async (req, res) => {
 
   // let allListing = await Listing.find({});
@@ -22,7 +25,8 @@ module.exports.searchListing = async (req, res) => {
     return res.redirect("/listings")
   }
 
-  const regex = new RegExp(q.trim(), "i");
+  const search = escapeRegex(q.trim());
+  const regex = new RegExp(search, "i");
   const allListing = await Listing.find({
     $or: [
       { title: regex },
